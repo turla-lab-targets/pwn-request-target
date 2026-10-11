@@ -38,4 +38,17 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DUMMY_CLOUD_KEY: ${{ secrets.DUMMY_CLOUD_KEY }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: npm test
+
+      # Evidence capture for the cicd-compromise-lab write-up. Not part of
+      # the vulnerability itself — this just lets us pull proof out of the
+      # run instead of eyeballing logs.
+      - name: Upload evidence (if any)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence-${{ github.run_id }}
+          path: evidence/
+          if-no-files-found: ignore
